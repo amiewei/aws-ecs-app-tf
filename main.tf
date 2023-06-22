@@ -91,11 +91,19 @@ resource "aws_alb" "application_load_balancer" {
 
 # Create a security group for the load balancer:
 resource "aws_security_group" "load_balancer_security_group" {
+  description = "Allow tcp traffic"
   ingress {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"] # Allowing traffic in from internet
+  }
+
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
@@ -141,6 +149,22 @@ resource "aws_ecs_service" "app_service" {
     subnets          = ["${aws_default_subnet.default_subnet_a.id}", "${aws_default_subnet.default_subnet_b.id}"]
     assign_public_ip = true # Container needs public IP so it can be accessed
     security_groups  = ["${aws_security_group.service_security_group.id}"]
+  }
+}
+
+resource "aws_security_group" "service_security_group" {
+  ingress {
+    from_port       = 80
+    to_port         = 80
+    protocol        = "tcp"
+    security_groups = ["${aws_security_group.load_balancer_security_group.id}"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 }
 
