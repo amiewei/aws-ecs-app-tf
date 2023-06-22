@@ -64,7 +64,7 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_policy" {
 # Provide a reference to your default VPC
 resource "aws_default_vpc" "default_vpc" {
   tags = {
-    Name        = "Default VPC"
+    Name        = "DefaultVPC"
     Environment = "Development"
   }
 }
