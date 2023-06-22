@@ -1,57 +1,23 @@
 provider "aws" {
-  region = "us-east-1"
+  region = var.aws_region
 }
 
-# resource "aws_ecr_repository" "app_ecr_repo" {
-#   name = "app-repo"
-# }
-
-resource "aws_ecs_cluster" "my_cluster" {
-  name = "app-cluster"
+resource "aws_ecs_cluster" "tfc_ecs_cluster" {
+  name = "tfc-app-cluster"
 }
-
-// "image": "${aws_ecr_repository.app_ecr_repo.repository_url}",
-# resource "aws_ecs_task_definition" "app_task" {
-#   family                   = "app-task" 
-#   container_definitions    = <<DEFINITION
-#   [
-#     {
-#       "name": "app-task",
-#       "image": "303952242443.dkr.ecr.us-east-1.amazonaws.com/tf-ecs-app-repo:v1",
-#       "essential": true,
-#       "portMappings": [
-#         {
-#           "containerPort": 5000,
-#           "hostPort": 5000
-#         }
-#       ],
-#       "memory": 512,
-#       "cpu": 256,
-#       "logConfiguration": {
-#           "logDriver": "awslogs",
-#           "options": {
-#             "awslogs-group": "${var.cloudwatch_group}",
-#             "awslogs-region": "us-east-1",
-#             "awslogs-stream-prefix": "ecs"
-#           }
-#       }
-#     }
-#   ]
-#   DEFINITION
-#   requires_compatibilities = ["FARGATE"]
-#   network_mode             = "awsvpc"
-#   memory                   = 512
-#   cpu                      = 256
-#   execution_role_arn       = aws_iam_role.ecsTaskExecutionRole.arn
-# }
 
 resource "aws_ecs_task_definition" "app_task" {
   family                   = "app-task"
+  requires_compatibilities = ["FARGATE"]
+  network_mode             = "awsvpc"
+  memory                   = 512
+  cpu                      = 256
+  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
   container_definitions    = <<DEFINITION
   [
     {
       "name": "app-task",
-      "image": "303952242443.dkr.ecr.us-east-1.amazonaws.com/tf-ecs-app-repo:v1",
+      "image": "303952242443.dkr.ecr.us-east-1.amazonaws.com/tf-ecs-app-repo:latest",
       "essential": true,
       "portMappings": [
         {
@@ -63,23 +29,18 @@ resource "aws_ecs_task_definition" "app_task" {
           "logDriver": "awslogs",
           "options": {
             "awslogs-group": "${var.cloudwatch_group}",
-            "awslogs-region": "us-east-1",
+            "awslogs-region": "${var.aws_region}",
             "awslogs-stream-prefix": "ecs"
           }
       }
     }
   ]
   DEFINITION
-  requires_compatibilities = ["FARGATE"]
-  network_mode             = "awsvpc"
-  memory                   = 512
-  cpu                      = 256
-  execution_role_arn       = aws_iam_role.ecsTaskExecutionRole.arn
 }
 
 
-resource "aws_iam_role" "ecsTaskExecutionRole" {
-  name               = "ecsTaskExecutionRole"
+resource "aws_iam_role" "ecs_task_execution_role" {
+  name               = "ecs_task_execution_role"
   assume_role_policy = data.aws_iam_policy_document.assume_role_policy.json
 }
 
@@ -94,45 +55,47 @@ data "aws_iam_policy_document" "assume_role_policy" {
   }
 }
 
-resource "aws_iam_role_policy_attachment" "ecsTaskExecutionRole_policy" {
-  role       = aws_iam_role.ecsTaskExecutionRole.name
+resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_policy" {
+  role       = aws_iam_role.ecs_task_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
 
 # Provide a reference to your default VPC
 resource "aws_default_vpc" "default_vpc" {
+  tags = {
+    Name        = "Default VPC"
+    Environment = "Development"
+  }
 }
 
-# Provide references to your default subnets
+# Provide references to your default subnets 
 resource "aws_default_subnet" "default_subnet_a" {
-  # Use your own region here but reference to subnet 1a
-  availability_zone = "us-east-1a"
+  availability_zone = "${var.aws_region}a"
 }
 
 resource "aws_default_subnet" "default_subnet_b" {
-  # Use your own region here but reference to subnet 1b
-  availability_zone = "us-east-1b"
+  availability_zone = "${var.aws_region}b"
 }
 
 resource "aws_alb" "application_load_balancer" {
-  name               = "load-balancer-dev" # Naming our load balancer
+  name               = "load-balancer-development"
   load_balancer_type = "application"
-  subnets = [ # Referencing the default subnets
+  subnets = [ # Reference the default subnets
     "${aws_default_subnet.default_subnet_a.id}",
     "${aws_default_subnet.default_subnet_b.id}"
   ]
-  # Referencing the security group
+  # Reference the security group
   security_groups = ["${aws_security_group.load_balancer_security_group.id}"]
 }
 
-# Creating a security group for the load balancer:
+# Create a security group for the load balancer:
 resource "aws_security_group" "load_balancer_security_group" {
   ingress {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # Allowing traffic in from all sources
+    cidr_blocks = ["0.0.0.0/0"] # Allowing traffic in from internet
   }
 
   egress {
@@ -162,31 +125,30 @@ resource "aws_lb_listener" "listener" {
 }
 
 resource "aws_ecs_service" "app_service" {
-  name            = "app-first-service"                  # Name the  service
-  cluster         = aws_ecs_cluster.my_cluster.id        # Reference the created Cluster
-  task_definition = aws_ecs_task_definition.app_task.arn # Reference the task that the service will spin up
+  name            = "app-first-service"
+  cluster         = aws_ecs_cluster.tfc_ecs_cluster.id
+  task_definition = aws_ecs_task_definition.app_task.arn
   launch_type     = "FARGATE"
-  desired_count   = 3 # Set up the number of containers to 3
+  desired_count   = 3 #scale to 3 tasks
 
   load_balancer {
-    target_group_arn = aws_lb_target_group.target_group.arn # Reference the target group
+    target_group_arn = aws_lb_target_group.target_group.arn
     container_name   = aws_ecs_task_definition.app_task.family
-    container_port   = 5000 # Specify the container port
+    container_port   = 5000
   }
 
   network_configuration {
     subnets          = ["${aws_default_subnet.default_subnet_a.id}", "${aws_default_subnet.default_subnet_b.id}"]
-    assign_public_ip = true                                                # Provide the containers with public IPs
-    security_groups  = ["${aws_security_group.service_security_group.id}"] # Set up the security group
+    assign_public_ip = true # Container needs public IP so it can be accessed
+    security_groups  = ["${aws_security_group.service_security_group.id}"]
   }
 }
 
 resource "aws_security_group" "service_security_group" {
   ingress {
-    from_port = 0
-    to_port   = 0
-    protocol  = "-1"
-    # Only allowing traffic in from the load balancer security group
+    from_port       = 0
+    to_port         = 0
+    protocol        = "-1"
     security_groups = ["${aws_security_group.load_balancer_security_group.id}"]
   }
 

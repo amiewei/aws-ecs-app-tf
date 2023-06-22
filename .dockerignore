@@ -9,4 +9,5 @@
 **/.editorconfig
 **/.aws
 **/dist
-.terraform
+.terraform**
+**/.tf
