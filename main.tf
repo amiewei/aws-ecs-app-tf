@@ -160,19 +160,10 @@ resource "aws_security_group" "service_security_group" {
     security_groups = ["${aws_security_group.load_balancer_security_group.id}"]
   }
 
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-}
-
-resource "aws_security_group" "service_security_group" {
   ingress {
-    from_port       = 0
-    to_port         = 0
-    protocol        = "-1"
+    from_port       = 443
+    to_port         = 443
+    protocol        = "tcp"
     security_groups = ["${aws_security_group.load_balancer_security_group.id}"]
   }
 
@@ -183,6 +174,22 @@ resource "aws_security_group" "service_security_group" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
+# resource "aws_security_group" "service_security_group" {
+#   ingress {
+#     from_port       = 0
+#     to_port         = 0
+#     protocol        = "-1"
+#     security_groups = ["${aws_security_group.load_balancer_security_group.id}"]
+#   }
+
+#   egress {
+#     from_port   = 0
+#     to_port     = 0
+#     protocol    = "-1"
+#     cidr_blocks = ["0.0.0.0/0"]
+#   }
+# }
 
 resource "aws_cloudwatch_log_group" "cloudwatch_log_group" {
   name = var.cloudwatch_group
