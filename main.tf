@@ -137,7 +137,7 @@ resource "aws_ecs_service" "app_service" {
   cluster         = aws_ecs_cluster.tfc_ecs_cluster.id
   task_definition = aws_ecs_task_definition.app_task.arn
   launch_type     = "FARGATE"
-  desired_count   = 3 #scale to 3 tasks
+  desired_count   = var.ecs_task_count #scale to 3 tasks
 
   load_balancer {
     target_group_arn = aws_lb_target_group.target_group.arn
