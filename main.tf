@@ -75,7 +75,7 @@ resource "aws_default_subnet" "default_subnet_a" {
 }
 
 resource "aws_default_subnet" "default_subnet_b" {
-  availability_zone = "${var.aws_region}b"
+  availability_zone = "${var.aws_region}c"
 }
 
 resource "aws_alb" "application_load_balancer" {
