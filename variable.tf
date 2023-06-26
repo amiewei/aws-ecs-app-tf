@@ -13,5 +13,5 @@ variable "aws_region" {
 variable "ecs_task_count" {
   description = "Number of desired ECS tasks"
   type        = number
-  default     = 3
+  default     = 2
 }
