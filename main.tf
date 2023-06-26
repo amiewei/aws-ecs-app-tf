@@ -74,7 +74,7 @@ resource "aws_default_subnet" "default_subnet_a" {
   availability_zone = "${var.aws_region}a"
 }
 
-resource "aws_default_subnet" "default_subnet_b" {
+resource "aws_default_subnet" "default_subnet_c" {
   availability_zone = "${var.aws_region}c"
 }
 
@@ -83,7 +83,7 @@ resource "aws_alb" "application_load_balancer" {
   load_balancer_type = "application"
   subnets = [ # Reference the default subnets
     "${aws_default_subnet.default_subnet_a.id}",
-    "${aws_default_subnet.default_subnet_b.id}"
+    "${aws_default_subnet.default_subnet_c.id}"
   ]
   # Reference the security group
   security_groups = ["${aws_security_group.load_balancer_security_group.id}"]
@@ -146,7 +146,7 @@ resource "aws_ecs_service" "app_service" {
   }
 
   network_configuration {
-    subnets          = ["${aws_default_subnet.default_subnet_a.id}", "${aws_default_subnet.default_subnet_b.id}"]
+    subnets          = ["${aws_default_subnet.default_subnet_a.id}", "${aws_default_subnet.default_subnet_c.id}"]
     assign_public_ip = true # Container needs public IP so it can be accessed
     security_groups  = ["${aws_security_group.service_security_group.id}"]
   }
