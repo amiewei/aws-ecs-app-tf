@@ -1,6 +1,6 @@
-## Deploy a dockerized web app to AWS ECS using Terraform Cloud
+## Deploy a web app to AWS ECS using Terraform Cloud
 
-#### **Current State:**
+#### **Current Setup:**
 
 _Initial Set Up:_
 
@@ -15,7 +15,9 @@ _Terraform:_
 3. Run your usual commands: `Terraform Init` > `Terraform` Plan > `Terraform Apply`
 4. See terraform output to access your web app url (app load balancer url)
 
-#### **Future State:**
+#### **Future Improvements:**
 
 1. Automate image build in the set up procedures so once app code is pushed to your repo, the image build is completed automatically
 2. Connect the image build process with the terraform process via a CI/CD pipeline so that terraform is applied after the image is built. The image URI we manually pasted in step 1 of the current state will need to be dynamically updated based on the output of the image build process
+
+**🙅🏻‍♀️DEMO ONLY - NOT FOR PROD USE🙅🏻‍♀️**
