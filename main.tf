@@ -124,7 +124,7 @@ resource "aws_lb_target_group" "target_group" {
 
 resource "aws_lb_listener" "listener" {
   load_balancer_arn = aws_alb.application_load_balancer.arn
-  port              = "80"
+  port              = 80
   protocol          = "HTTP"
   default_action {
     type             = "forward"
@@ -157,7 +157,7 @@ resource "aws_security_group" "service_security_group" {
     from_port       = 0
     to_port         = 0
     protocol        = "-1"
-    security_groups = ["${aws_security_group.load_balancer_security_group.id}"]
+    security_groups = ["${aws_security_group.load_balancer_security_group.id}"] //only allow resources assocaited with the load_balancer_security_group
   }
 
   egress {
