@@ -9,3 +9,5 @@
 **/.aws
 **/dist
 .terraform*
+.pluralith
+TODO.md

@@ -1,9 +1,0 @@
-variable "ecs_task_count" {}
-variable "ecs_cluster_name" {}
-variable "cloudwatch_group_name" {}
-variable "aws_region" {}
-variable "execution_role_arn" {}
-variable "target_group_arn" {}
-variable "service_security_group_id" {}
-variable "default_subnet_a_id" {}
-variable "default_subnet_c_id" {}

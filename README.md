@@ -2,11 +2,11 @@
 
 #### **Current Setup:**
 
-_Initial Set Up:_
+_Initial Setup and App Frontend:_
 
 1. Set up appropriate AWS access permissions for terrable and enable AWS services
 2. Create AWS Container Registry (ECR) repo
-3. Build Docker image and push to ECR
+3. From the app_frontend directory, build Docker image and push to ECR
 
 _Terraform:_
 
