@@ -1,9 +1,13 @@
 # Pull the Node.js image
+
+# for local computer Macbook M2
 # FROM node:18-alpine
+
+# for AWS
 FROM --platform=linux/amd64 node:18-alpine
 
 # Create a Docker working directory
-WORKDIR '/app'
+WORKDIR /usr/src/app
 
 # copy dependencies files
 COPY package*.json ./

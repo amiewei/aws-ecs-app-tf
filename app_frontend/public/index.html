@@ -9,58 +9,67 @@
                 font-family: Verdana, Geneva, Tahoma, sans-serif;
             }
             header {
-                background-color: rgb(40, 13, 85);
-                padding: 20px;
+                background-color: rgb(195, 177, 222);
+                height: 20vh;
                 margin: 0;
                 color: white;
                 display: flex;
                 justify-content: center;
                 align-items: center;
             }
-            img {
-                width: 300px;
-                height: 300px;
-            }
             .tf-logo {
                 width: 100px;
                 height: 100px;
             }
             main {
-                padding: 10px 30px;
+                padding: 10vh 10vh;
+                min-height: 60vh;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+            .container {
+                max-width: 80%;
+                margin-bottom: 10vh;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
             }
             .tagline {
                 font-size: x-large;
                 font-style: italic;
                 color: rgb(148, 46, 220);
             }
+            footer {
+                background-color: rgb(195, 177, 222);
+                height: 20vh;
+                margin: 0;
+                color: white;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
         </style>
     </head>
     <body>
         <header>
             <h1>What else can you terraform?</h1>
-            <img
-                class="tf-logo"
-                src="https://www.svgrepo.com/show/376353/terraform.svg"
-                alt="Terraform Cloud"
-            />
+            <img class="tf-logo" src="./tfc.png" alt="Terraform Cloud" />
         </header>
         <main>
-            <img
-                src="https://lavca.org/app/uploads/2019/10/aws-logo-square.png"
-                alt="aws"
-            />
-            <img
-                src="https://databerry.com/wp-content/uploads/2022/08/Google-Cloud-Platform-GCP-logo.png"
-                alt="gcp"
-            />
-            <img
-                src="data:image/png;base64,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"
-                alt="azure"
-            />
-            <img
-                src="https://m.media-amazon.com/images/I/81zce3i1UhL._AC_SX679_.jpg"
-                alt="Mars"
-            />
+            <div class="container">
+                <img src="./aws.png" alt="aws" />
+                <img src="./gcp.png" alt="gcp" />
+                <img src="./azure.png" alt="azure" />
+                <img src="./tfmars.png" alt="Mars" />
+            </div>
+            <div>
+                <h2><a href=https://registry.terraform.io>See More in the Terraform Registry</a></h2>
+            </div>
         </main>
+        <footer>
+            <p>Terraform with Amie</p>
+        </footer>
     </body>
 </html>
