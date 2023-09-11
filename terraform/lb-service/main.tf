@@ -84,7 +84,7 @@ module "ecs_service_definition" {
   version = "~> 5.0"
 
   name               = local.name
-  desired_count      = 3
+  desired_count      = var.ecs_task_count
   cluster_arn        = var.ecs_cluster_arn
   enable_autoscaling = false
 

@@ -4,7 +4,7 @@
 
 _Initial Setup and App Frontend:_
 
-1. Set up appropriate AWS access permissions for terrable and enable AWS services
+1. Set up appropriate AWS access permissions for Terraform and enable AWS services
 2. Create AWS Container Registry (ECR) repo
 3. From the app_frontend directory, build Docker image and push to ECR
 
@@ -12,7 +12,7 @@ _Terraform:_
 
 1. Take the ECR image URI and paste into the container definition section in main.tf. Also make sure the ECR repo name matches what was created in the above set up step.
 2. Connect this repo containing terraform code and app code with Terraform Cloud
-3. Run your usual commands: `Terraform Init` > `Terraform` Plan > `Terraform Apply`
+3. Run your usual commands: `terraform init` > `terraform plan` > `terraform apply --auto-approve`
 4. See terraform output to access your web app url (app load balancer url)
 
 #### **Future Improvements:**

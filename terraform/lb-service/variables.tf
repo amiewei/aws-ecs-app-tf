@@ -54,3 +54,9 @@ variable "container_port" {
   type        = number
   default     = 5000
 }
+
+variable "ecs_task_count" {
+  type        = number
+  default     = 3
+  description = "Number of tasks to run in the service."
+}

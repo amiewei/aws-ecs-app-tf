@@ -15,6 +15,7 @@ module "lb_service" {
   container_image = "303952242443.dkr.ecr.us-east-1.amazonaws.com/tf-ecs-app-repo:latest"
   container_port  = 5000
   aws_region      = var.aws_region
+  ecs_task_count  = 3
 
   # Pass in dependencies to ensure core-infra gets created first
   vpc_id                       = module.core_infra.vpc_id
